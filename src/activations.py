@@ -40,6 +40,8 @@ class ReLU:
             ReLU 입력 x에 대한 gradient. forward 때 x <= 0이었던 위치는 0입니다.
         """
         # TODO: forward에서 저장한 self.mask를 이용해 gradient가 흐를 위치만 남기세요.
+        self.mask = self.mask.astype(dout.dtype)  # bool -> float
+        return dout * self.mask
         raise NotImplementedError("ReLU.backward를 구현하세요.")
 
 
