@@ -33,6 +33,9 @@ class Affine:
             (batch_size, output_dim)
         """
         # TODO: backward에서 사용할 입력 x를 저장하고 x @ W + b를 반환하세요.
+        x = x.reshape(x.shape[0], -1)  # (batch_size, input_dim)
+        self.x = x
+        return x @ self.W + self.b
         raise NotImplementedError("Affine.forward를 구현하세요.")
 
     def backward(self, dout):
