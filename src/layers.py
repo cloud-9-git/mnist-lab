@@ -51,6 +51,9 @@ class Affine:
         """
         # TODO: self.dW, self.db, dx를 계산하세요.
         # 힌트: dW = x.T @ dout, db = batch 방향 합, dx = dout @ W.T
+        self.dW = self.x.T @ dout
+        self.db = np.sum(dout, axis=0) 
+        return dout @ self.W.T
         raise NotImplementedError("Affine.backward를 구현하세요.")
 
 
