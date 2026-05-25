@@ -78,6 +78,13 @@ class NeuralNetwork:
             (batch_size, 10) 각 숫자 클래스의 확률
         """
         # TODO: self.layers를 순서대로 통과시키고 마지막에 Softmax를 적용하세요.
+        out = x
+        for layer in self.layers.values():
+            if isinstance(layer, (BatchNorm, Dropout)):
+                out = layer.forward(out, train)
+            else:
+                out = layer.forward(out)
+        return out
         raise NotImplementedError("NeuralNetwork.forward를 구현하세요.")
 
     def backward(self, dout):
