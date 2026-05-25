@@ -156,7 +156,11 @@ class Dropout:
             train: True면 무작위 mask 적용, False면 평균적인 출력 크기로 scale
         """
         # TODO: train=True에서는 mask를 만들고 x에 곱하세요.
+        if train:
+            self.mask = np.random.rand(*x.shape) > self.drop_ratio
+            return x * self.mask
         # TODO: train=False에서는 x * (1 - drop_ratio)를 반환하세요.
+        return x * (1 - self.drop_ratio)
         raise NotImplementedError("Dropout.forward를 구현하세요.")
 
     def backward(self, dout):
