@@ -32,14 +32,18 @@ class NeuralNetwork:
         # TODO: params dict를 만들고 Affine/BatchNorm/ReLU/Dropout layer를 순서대로 구성하세요.
         # 권장 구조: 784 -> 512 -> 256 -> 10
         # self.layers는 OrderedDict로 만들고, self.grads는 params와 같은 key를 갖게 합니다.
-        params = {}
-        params["W1"] = np.random.randn(784, 512) * np.sqrt(2 / 784)  # He 초기화
-        params["b1"] = np.zeros(512)
-        params["W2"] = np.random.randn(512, 256) * np.sqrt(2 / 512)
-        params["b2"] = np.zeros(256)
-        params["W3"] = np.random.randn(256, 10) * np.sqrt(2 / 256)
-        params["b3"] = np.zeros(10)
-        
+        self.use_batchnorm = use_batchnorm
+        self.use_dropout = use_dropout
+        self.dropout_ratio = dropout_ratio
+
+        self.params = {}
+        self.params["W1"] = np.random.randn(784, 512) * np.sqrt(2 / 784)
+        self.params["b1"] = np.zeros(512)
+        self.params["W2"] = np.random.randn(512, 256) * np.sqrt(2 / 512)
+        self.params["b2"] = np.zeros(256)
+        self.params["W3"] = np.random.randn(256, 10) * np.sqrt(2 / 256)
+        self.params["b3"] = np.zeros(10)
+
         if self.use_batchnorm:
             self.params["gamma1"] = np.ones(512)
             self.params["beta1"] = np.zeros(512)
@@ -65,7 +69,7 @@ class NeuralNetwork:
         self.layers["Softmax"] = Softmax()
 
         self.grads = {}
-        return self.layers, self.params, self.grads
+        return
         raise NotImplementedError("NeuralNetwork.__init__을 구현하세요.")
 
     def forward(self, x, train=True):

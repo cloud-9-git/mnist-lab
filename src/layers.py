@@ -90,12 +90,12 @@ class BatchNorm:
         """
         # TODO: train=True에서는 batch mean/var로 정규화하고 running 통계를 갱신하세요.
         if train:
-            self.mean = np.mean
+            self.mean = np.mean(x, axis=0)
             self.var = np.var(x, axis=0)
             self.x_centered = x - self.mean
             self.std_inv = 1.0 / np.sqrt(self.var + self.eps)
             self.x_hat = self.x_centered * self.std_inv
-            
+
             self.running_mean = self.momentum * self.running_mean + (1 - self.momentum) * self.mean
             self.running_var = self.momentum * self.running_var + (1 - self.momentum) * self.var
         # TODO: train=False에서는 running_mean/running_var를 사용하세요.
@@ -103,7 +103,7 @@ class BatchNorm:
             self.x_centered = x - self.running_mean
             self.std_inv = 1.0 / np.sqrt(self.running_var + self.eps)
             self.x_hat = self.x_centered * self.std_inv
-            
+
         out = self.gamma * self.x_hat + self.beta
         return out
         raise NotImplementedError("BatchNorm.forward를 구현하세요.")
