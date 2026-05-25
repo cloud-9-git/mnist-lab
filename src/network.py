@@ -95,6 +95,25 @@ class NeuralNetwork:
             dout: Softmax+CrossEntropy를 합친 출력층 gradient
         """
         # TODO: layer를 역순으로 통과시키고 Affine/BatchNorm의 gradient를 self.grads에 모으세요.
+        for layer in reversed(list(self.layers.values())):
+            dout = layer.backward(dout)
+
+        self.grads = {
+            "W1": self.layers["Affine1"].dW,
+            "b1": self.layers["Affine1"].db,
+            "W2": self.layers["Affine2"].dW,
+            "b2": self.layers["Affine2"].db,
+            "W3": self.layers["Affine3"].dW,
+            "b3": self.layers["Affine3"].db,
+        }
+
+        if self.use_batchnorm:
+            self.grads["gamma1"] = self.layers["BatchNorm1"].dgamma
+            self.grads["beta1"] = self.layers["BatchNorm1"].dbeta
+            self.grads["gamma2"] = self.layers["BatchNorm2"].dgamma
+            self.grads["beta2"] = self.layers["BatchNorm2"].dbeta
+
+        return self.grads
         raise NotImplementedError("NeuralNetwork.backward를 구현하세요.")
 
     def loss(self, x, y):
