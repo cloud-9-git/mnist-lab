@@ -120,6 +120,20 @@ class BatchNorm:
         """
         # TODO: self.dbeta, self.dgamma, dx를 계산하세요.
         # 힌트: 먼저 dbeta와 dgamma shape가 beta/gamma와 같은지 확인합니다.
+        N = dout.shape[0]
+
+        self.dbeta = np.sum(dout, axis=0)
+        self.dgamma = np.sum(dout * self.x_hat, axis=0)
+
+        dxhat = dout * self.gamma
+        dvar = np.sum(dxhat * self.x_centered * -0.5 * (self.std_inv ** 3), axis=0)
+        dmean = np.sum(dxhat * -self.std_inv, axis=0) + dvar * np.mean(-2.0 * self.x_centered, axis=0)
+
+        dx = dxhat * self.std_inv
+        dx += dvar * 2.0 * self.x_centered / N
+        dx += dmean / N
+
+        return dx
         raise NotImplementedError("BatchNorm.backward를 구현하세요.")
 
 
