@@ -14,10 +14,23 @@ class SGD:
     def __init__(self, lr=0.01):
         """Args: lr: 한 번 업데이트할 때 gradient에 곱할 학습률."""
         self.lr = lr
+        self.momentum = momentum
+        self.velocity = {}
 
     def update(self, params, grads):
         """params dict의 모든 파라미터를 제자리(in-place)에서 갱신합니다."""
         # TODO: params[key]를 gradient 반대 방향으로 업데이트하세요.
+        for key in params:
+            if self.momentum == 0.0:
+                params[key] -= self.lr * grads[key]
+                continue
+
+            if key not in self.velocity:
+                self.velocity[key] = np.zeros_like(params[key])
+
+            self.velocity[key] = self.momentum * self.velocity[key] - self.lr * grads[key]
+            params[key] += self.velocity[key]
+        return params
         raise NotImplementedError("SGD.update를 구현하세요.")
 
 
@@ -38,4 +51,15 @@ class Adam:
     def update(self, params, grads):
         """Adam 공식에 따라 params dict의 모든 파라미터를 갱신합니다."""
         # TODO: m, v 이동평균과 bias correction을 사용해 params를 업데이트하세요.
+        self.t += 1
+        for key in params:
+            if key not in self.m:
+                self.m[key] = np.zeros_like(params[key])
+                self.v[key] = np.zeros_like(params[key])
+            self.m[key] += (1 - 0.9) * (grads[key] - self.m[key])
+            self.v[key] += (1 - 0.999) * (grads[key] ** 2 - self.v[key])
+            m_hat = self.m[key] / (1 - 0.9 ** self.t)
+            v_hat = self.v[key] / (1 - 0.999 ** self.t)
+            params[key] -= self.lr * m_hat / (np.sqrt(v_hat) + 1e-7)
+        return params
         raise NotImplementedError("Adam.update를 구현하세요.")
