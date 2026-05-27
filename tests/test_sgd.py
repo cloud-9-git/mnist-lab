@@ -18,3 +18,14 @@ class TestSGD:
         np.testing.assert_array_almost_equal(
             params["W"], np.array([[0.9, 1.9], [2.9, 3.9]])
         )
+
+    def test_sgd_with_momentum_accumulates_velocity(self):
+        params = {"W": np.array([1.0, 2.0])}
+        grads = {"W": np.array([0.5, 0.5])}
+        sgd = SGD(lr=0.1, momentum=0.9)
+
+        sgd.update(params, grads)
+        np.testing.assert_array_almost_equal(params["W"], np.array([0.95, 1.95]))
+
+        sgd.update(params, grads)
+        np.testing.assert_array_almost_equal(params["W"], np.array([0.855, 1.855]))

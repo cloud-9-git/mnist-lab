@@ -14,12 +14,22 @@ class SGD:
     def __init__(self, lr=0.01):
         """Args: lr: 한 번 업데이트할 때 gradient에 곱할 학습률."""
         self.lr = lr
+        self.momentum = momentum
+        self.velocity = {}
 
     def update(self, params, grads):
         """params dict의 모든 파라미터를 제자리(in-place)에서 갱신합니다."""
         # TODO: params[key]를 gradient 반대 방향으로 업데이트하세요.
         for key in params:
-            params[key] -= self.lr * grads[key]
+            if self.momentum == 0.0:
+                params[key] -= self.lr * grads[key]
+                continue
+
+            if key not in self.velocity:
+                self.velocity[key] = np.zeros_like(params[key])
+
+            self.velocity[key] = self.momentum * self.velocity[key] - self.lr * grads[key]
+            params[key] += self.velocity[key]
         return params
         raise NotImplementedError("SGD.update를 구현하세요.")
 
